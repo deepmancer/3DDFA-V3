@@ -160,7 +160,7 @@ def align_img(img, lm, lm3D, mask=None, target_size=224., rescale_factor=102.):
 
 def load_lm3d():
 
-    Lm3D = loadmat('assets/similarity_Lm3D_all.mat')
+    Lm3D = loadmat('modules/TDDFA_V3/assets/similarity_Lm3D_all.mat')
     Lm3D = Lm3D['lm']
 
     # calculate 5 facial landmarks using 68 landmarks

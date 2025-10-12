@@ -72,7 +72,7 @@ class face_model:
         self.args = args
 
         self.device = self.args.device
-        model = np.load("./assets/face_model.npy",allow_pickle=True).item()
+        model = np.load("modules/TDDFA_V3/assets/face_model.npy",allow_pickle=True).item()
 
         # mean shape, size (107127, 1)
         self.u = torch.tensor(model['u'], requires_grad=False, dtype=torch.float32, device=self.device)
@@ -155,7 +155,7 @@ class face_model:
             self.net_recon = networks.define_net_recon(
                 net_recon='resnet50', use_last_fc=False, init_path=None
             )
-            self.net_recon.load_state_dict(torch.load("assets/net_recon.pth", map_location=torch.device('cpu'))['net_recon'])
+            self.net_recon.load_state_dict(torch.load("modules/TDDFA_V3/assets/net_recon.pth", map_location=torch.device('cpu'), weights_only=False)['net_recon'])
             self.net_recon = self.net_recon.to(self.device)
             self.net_recon.eval()
 
@@ -163,7 +163,7 @@ class face_model:
             self.net_recon = networks.define_net_recon_mobilenetv3(
                 net_recon='recon_mobilenetv3_large', use_last_fc=False, init_path=None
             )
-            self.net_recon.load_state_dict(torch.load("assets/net_recon_mbnet.pth", map_location=torch.device('cpu'))['net_recon'])
+            self.net_recon.load_state_dict(torch.load("modules/TDDFA_V3/assets/net_recon_mbnet.pth", map_location=torch.device('cpu'), weights_only=False)['net_recon'])
             self.net_recon = self.net_recon.to(self.device)
             self.net_recon.eval()
 

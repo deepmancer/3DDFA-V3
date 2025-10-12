@@ -87,7 +87,7 @@ class LargeModelInfer:
         self.large_base_lmks_model = LargeBaseLmkInfer.model_preload(ckpt,  device.lower() == "cuda")
         self.device = device.lower()
         self.detector = Model(max_size=512, device=device)
-        state_dict = torch.load(os.path.join(os.path.dirname(ckpt), 'retinaface_resnet50_2020-07-20_old_torch.pth' ) , map_location="cpu")
+        state_dict = torch.load(os.path.join(os.path.dirname(ckpt), 'retinaface_resnet50_2020-07-20_old_torch.pth' ) , map_location="cpu", weights_only=False)
         # torch.save(state_dict, './models/retinaface_resnet50_2020-07-20_old_torch.pth', _use_new_zipfile_serialization=False)
         self.detector.load_state_dict(state_dict)
         self.detector.eval()

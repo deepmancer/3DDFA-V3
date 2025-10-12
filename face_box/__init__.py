@@ -19,7 +19,7 @@ def no_crop(im):
 class retinaface:
     def __init__(self, device):
         # retinaface uses cuda
-        self.landmark_model = LargeModelInfer("assets/large_base_net.pth", device=device)
+        self.landmark_model = LargeModelInfer("modules/TDDFA_V3/assets/large_base_net.pth", device=device)
         self.lm3d_std = load_lm3d()
 
     def detector(self, im):

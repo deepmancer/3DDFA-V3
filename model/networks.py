@@ -79,7 +79,7 @@ class ReconNetWrapper(nn.Module):
         func, last_dim = func_dict[net_recon]
         backbone = func(use_last_fc=use_last_fc, num_classes=self.fc_dim)
         if init_path and os.path.isfile(init_path):
-            state_dict = filter_state_dict(torch.load(init_path, map_location='cpu'))
+            state_dict = filter_state_dict(torch.load(init_path, map_location='cpu', weights_only=False))
             backbone.load_state_dict(state_dict)
             print("loading init net_recon %s from %s" %(net_recon, init_path))
         self.backbone = backbone
@@ -112,7 +112,7 @@ class RecogNetWrapper(nn.Module):
         super(RecogNetWrapper, self).__init__()
         net = get_model(name=net_recog, fp16=False)
         if pretrained_path:
-            state_dict = torch.load(pretrained_path, map_location='cpu')
+            state_dict = torch.load(pretrained_path, map_location='cpu', weights_only=False)
             net.load_state_dict(state_dict)
             print("loading pretrained net_recog %s from %s" %(net_recog, pretrained_path))
         for param in net.parameters():
@@ -537,7 +537,7 @@ class ReconNetWrapper_mobilenetv3(nn.Module):
         func, last_dim = func_dict[net_recon]
         backbone = func()   # func(use_last_fc=use_last_fc, num_classes=self.fc_dim)
         if init_path and os.path.isfile(init_path):
-            state_dict = filter_state_dict(torch.load(init_path, map_location='cpu'),remove_name='classifier')
+            state_dict = filter_state_dict(torch.load(init_path, map_location='cpu', weights_only=False),remove_name='classifier')
             backbone.load_state_dict(state_dict)
             print("loading init net_recon %s from %s" %(net_recon, init_path))
         self.backbone = backbone

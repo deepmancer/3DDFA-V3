@@ -18,7 +18,7 @@ def load_checkpoint(file_path: Union[Path, str],
     Returns:
     """
     checkpoint = torch.load(
-        file_path, map_location=lambda storage, loc: storage)
+        file_path, map_location=lambda storage, loc: storage, weights_only=False)
 
     if rename_in_layers is not None:
         model_state_dict = checkpoint['state_dict']
