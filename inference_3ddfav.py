@@ -28,8 +28,8 @@ def create_args(input_path, output_dir, device='cuda'):
     args.ldm106 = True
     args.ldm106_2d = True
     args.ldm134 = True
-    args.seg = True
-    args.seg_visible = True
+    args.seg = False
+    args.seg_visible = False
     
     args.useTex = False
     args.extractTex = False
