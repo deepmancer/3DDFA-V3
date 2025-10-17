@@ -272,6 +272,7 @@ class visualize:
         if self.args.useTex:
             v3d_new = self.result_dict['v3d'][0].copy()
             v3d_new[..., -1] = 10 - v3d_new[..., -1]
+            # v3d_new[..., 1] = -v3d_new[..., 1] # change to right-hand coord.
             write_obj_with_colors(os.path.join(save_path, img_name + '_pcaTex.obj'), v3d_new, self.result_dict['tri'], self.result_dict['face_texture'][0])
 
         len_visualize_dict = len(self.visualize_dict)
@@ -289,6 +290,8 @@ class visualize:
             img_res[y_start:y_end, x_start:x_end] = image
 
         cv2.imwrite(os.path.join(save_path, img_name + '.png'), img_res)
+
+        self.save_dict['image_size'] = np.array([img.shape[0], img.shape[1]], dtype=np.int32)
         np.save(os.path.join(save_path, img_name + '.npy'), self.save_dict)
 
 

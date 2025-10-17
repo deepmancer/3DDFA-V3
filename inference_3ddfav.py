@@ -99,7 +99,6 @@ def main(input_path, output_dir=None, device='cuda'):
                 str(save_dir),
                 'landmarks'
             )
-            
             processed_count += 1
             
         except Exception as e:

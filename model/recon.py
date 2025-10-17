@@ -91,6 +91,8 @@ class face_model:
         # vertex uv coordinates, size (35709, 3), range (0, 1.)
         self.uv_coords = torch.tensor(model['uv_coords'], requires_grad=False, dtype=torch.float32, device=self.device)
         
+        self.rasterize_size = 224
+
         if args.extractTex:
             uv_coords_numpy = process_uv(model['uv_coords'].copy(), 1024, 1024)
             self.uv_coords_torch = (torch.tensor(uv_coords_numpy, requires_grad=False, dtype=torch.float32, device=self.device) / 1023 - 0.5) * 2
@@ -143,12 +145,12 @@ class face_model:
         if self.device == 'cpu':
             from util.cpu_renderer import MeshRenderer_cpu
             self.renderer = MeshRenderer_cpu(
-                        rasterize_fov=2 * np.arctan(112. / 1015) * 180 / np.pi, znear=5., zfar=15., rasterize_size=int(2 * 112.)
+                        rasterize_fov=2 * np.arctan(112. / 1015) * 180 / np.pi, znear=5., zfar=15., rasterize_size=int(self.rasterize_size)
             )
         else:
             from util.nv_diffrast import MeshRenderer
             self.renderer = MeshRenderer(
-                        rasterize_fov=2 * np.arctan(112. / 1015) * 180 / np.pi, znear=5., zfar=15., rasterize_size=int(2 * 112.)
+                        rasterize_fov=2 * np.arctan(112. / 1015) * 180 / np.pi, znear=5., zfar=15., rasterize_size=int(self.rasterize_size)
             )
 
         if args.backbone == 'resnet50':
@@ -462,7 +464,13 @@ class face_model:
         rotation = self.compute_rotation(alpha_dict['angle'])
         face_shape_transformed = self.transform(face_shape, rotation, alpha_dict['trans'])
 
-        # face vertice in 3d
+        # compose intrinsic and extrinsic parameters into a homogeneous projection matrix
+        K = self.persc_proj.T
+        K[1, 2] = self.rasterize_size - K[1, 2]
+        P = torch.eye(4, device=K.device)[:3]
+        P[:3, :3] = K
+        P[:3, 3] = alpha_dict['trans']
+
         v3d = self.to_camera(face_shape_transformed)
 
         # face vertice in 2d image plane
@@ -490,6 +498,7 @@ class face_model:
             'render_shape': pred_image_shape.detach().cpu().permute(0, 2, 3, 1).numpy(),
             'render_face': pred_image.detach().cpu().permute(0, 2, 3, 1).numpy(),
             'render_mask': mask.detach().cpu().permute(0, 2, 3, 1).numpy(),
+            'P': P.detach().cpu().numpy(),
         }
 
         # compute visible vertice according to normal and renderer
